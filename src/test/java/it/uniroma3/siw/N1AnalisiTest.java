@@ -23,9 +23,8 @@ import java.util.*;
  * una query → problema N+1.
  *
  * Confrontiamo:
- *   A) LAZY ingenuo  -> 1 + (numero di squadre distinte) query: ogni squadra viene
- *                       caricata una sola volta grazie alla cache di primo livello,
- *                       quindi non 1+2N ma comunque molte query
+ *   A) LAZY ingenuo  -> 1 + una query per squadra distinta (la cache di primo
+ *                       livello evita di ricaricare la stessa squadra)
  *   B) JOIN FETCH    -> 1 query
  *   C) EntityGraph   -> 1 query (equivalente dichiarativo)
  *
@@ -78,9 +77,8 @@ class N1AnalisiTest {
 
         torneoId = t.getId();
 
-        // Il setup gira nella stessa transazione del test: senza svuotare il
-        // persistence context tutte le entità sarebbero già in cache di primo
-        // livello e nessuna strategia farebbe query aggiuntive.
+        // svuoto il persistence context: se no le entità del setup sono già
+        // in cache e l'N+1 non si vede
         em.flush();
         em.clear();
     }

@@ -51,8 +51,7 @@ public class SecurityConfiguration {
         httpSecurity.csrf(csrf -> csrf.disable());
 
         httpSecurity.authorizeHttpRequests(authorize -> {
-            // Funzionalità pubbliche (requisito 4.1): tornei, squadre, partite e classifica
-            // sono visibili anche agli utenti non autenticati. "/rest/**" serve a React.
+            // pagine pubbliche + "/rest/**" per React
             authorize.requestMatchers(HttpMethod.GET, "/", "/index", "/register", "/tornei", "/tornei/**", "/squadre", "/squadre/**", "/partite/**", "/css/**", "/images/**", "/favicon.ico", "/rest/**").permitAll();
             authorize.requestMatchers(HttpMethod.POST, "/register", "/login").permitAll();
             authorize.requestMatchers(HttpMethod.GET, "/admin/**").hasAnyAuthority(ADMIN_ROLE);

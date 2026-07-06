@@ -16,7 +16,7 @@ public class GlobalExceptionHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    // id inesistente (orElseThrow) o risorsa statica mancante -> 404
+    // id inesistente o risorsa mancante -> 404
     @ExceptionHandler({NoResourceFoundException.class, NoSuchElementException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNotFound(Exception e, Model model) {
@@ -27,7 +27,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleGenericException(Exception e, Model model) {
-        // senza questo log l'eccezione verrebbe inghiottita e in console non si vedrebbe nulla
         logger.error("Errore non gestito", e);
         model.addAttribute("errorMessage", "Si è verificato un errore interno.");
         return "error/500";

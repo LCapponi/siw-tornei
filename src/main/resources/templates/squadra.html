@@ -17,7 +17,7 @@
         <span th:text="${squadra.citta}"></span> ·
         Fondata nel <span th:text="${squadra.annoFondazione}"></span>
     </p>
-
+<p>Numero giocatori: <span th:text="${#lists.size(squadra.giocatori)}"></span></p>
     <h2>Rosa</h2>
     <p sec:authorize="hasAuthority('ADMIN')">
         <a th:href="@{|/admin/squadre/${squadra.id}/giocatori/nuovo|}">+ Aggiungi giocatore</a>

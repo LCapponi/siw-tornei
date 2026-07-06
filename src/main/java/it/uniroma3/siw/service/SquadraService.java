@@ -35,7 +35,6 @@ public class SquadraService {
 
     @Transactional
     public Squadra salvaSquadra(Squadra s) {
-        // INSERT: salvo la squadra e poi registro le iscrizioni ai tornei scelti
         if (s.getId() == null) {
             Set<Torneo> selezionati = s.getTornei();
             s.setTornei(new HashSet<>());
@@ -44,11 +43,8 @@ public class SquadraService {
             return salvata;
         }
 
-        // UPDATE: il form invia solo i campi scalari e il multi-select dei tornei,
-        // quindi la Squadra ricevuta ha giocatori VUOTI. Un save() farebbe una merge
-        // che copierebbe anche la collezione vuota, eliminando tutti i giocatori
-        // (cascade + orphanRemoval). Carico quindi l'entità gestita, aggiorno solo
-        // i campi del form e sincronizzo le iscrizioni ai tornei.
+        // update: niente save() sull'oggetto del form (giocatori vuoti, la merge
+        // li cancellerebbe): aggiorno solo i campi e sincronizzo i tornei
         Squadra esistente = squadraRepo.findById(s.getId()).orElseThrow();
         esistente.setNome(s.getNome());
         esistente.setCitta(s.getCitta());
@@ -57,9 +53,8 @@ public class SquadraService {
         return esistente;
     }
 
-    // Allinea le iscrizioni della squadra ai tornei selezionati nel form.
-    // Si agisce sempre sul lato owning della many-to-many (Torneo.squadre),
-    // perché è la sua collezione a governare la join table torneo_squadra.
+    // allinea le iscrizioni ai tornei selezionati nel form
+    // (si lavora sul lato owning, cioè Torneo.squadre)
     private void aggiornaTornei(Squadra squadra, Set<Torneo> selezionati) {
         Set<Long> idSelezionati = new HashSet<>();
         if (selezionati != null) {
@@ -68,7 +63,7 @@ public class SquadraService {
             }
         }
 
-        // 1) rimuovo la squadra dai tornei deselezionati
+        // tolgo dai tornei deselezionati
         for (Torneo t : new ArrayList<>(squadra.getTornei())) {
             if (!idSelezionati.contains(t.getId())) {
                 Torneo gestito = torneoRepo.findByIdJoinFetch(t.getId()).orElseThrow();
@@ -77,7 +72,7 @@ public class SquadraService {
             }
         }
 
-        // 2) aggiungo la squadra ai tornei selezionati (Set: nessun duplicato)
+        // aggiungo ai tornei selezionati
         for (Long idTorneo : idSelezionati) {
             Torneo gestito = torneoRepo.findByIdJoinFetch(idTorneo).orElseThrow();
             gestito.getSquadre().add(squadra);
@@ -85,24 +80,20 @@ public class SquadraService {
         }
     }
 
-    // Caso d'uso admin "eliminazione di squadre": il service coordina più repository.
-    // Non basta deleteById: prima vanno rimossi i riferimenti alla squadra
-    // (partite giocate/programmate e iscrizioni ai tornei), altrimenti il DB
-    // solleva una violazione di chiave esterna.
+    // prima di eliminare la squadra vanno tolti i riferimenti, se no il DB
+    // blocca per le foreign key
     @Transactional
     public void eliminaSquadra(Long id) {
         Squadra squadra = squadraRepo.findById(id).orElseThrow();
 
-        // 1) elimino le partite in cui la squadra è coinvolta (FK squadraHome/squadraAway)
+        // partite in casa o in trasferta
         partitaRepo.deleteAll(partitaRepo.findBySquadra(id));
 
-        // 2) tolgo la squadra dai tornei: Torneo è il lato owning della many-to-many,
-        //    quindi è la sua collezione a governare la join table torneo_squadra
+        // tolgo la squadra dai tornei (lato owning della many-to-many)
         for (Torneo t : squadra.getTornei()) {
             t.getSquadre().remove(squadra);
         }
 
-        // 3) elimino la squadra: i giocatori vengono rimossi in cascata 
-        squadraRepo.delete(squadra);
+        squadraRepo.delete(squadra); // giocatori eliminati in cascata
     }
 }

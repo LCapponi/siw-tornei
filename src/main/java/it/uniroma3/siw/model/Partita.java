@@ -29,9 +29,7 @@ public class Partita {
     @Column(nullable = false)
     private String stato; // SCHEDULED, PLAYED
 
-    // fetch LAZY esplicito: il default JPA per @ManyToOne è EAGER.
-    // Chi ha bisogno delle associazioni le carica con JOIN FETCH / EntityGraph
-    // (vedi PartitaRepository e l'analisi N+1).
+    // LAZY: le associazioni le carico con join fetch quando servono (vedi repository)
     @NotNull
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JsonIgnore

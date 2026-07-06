@@ -35,16 +35,12 @@ public class TorneoService {
             throw new DuplicateTorneoException(t.getNome(), t.getAnno());
         }
 
-        // INSERT: entità nuova, save() va bene
         if (t.getId() == null) {
             return torneoRepo.save(t);
         }
 
-        // UPDATE: il form invia solo i campi scalari, quindi il Torneo ricevuto
-        // ha squadre e partite VUOTE. Un save() farebbe una merge che copierebbe
-        // anche le collezioni vuote: squadre disiscritte e partite eliminate
-        // (cascade + orphanRemoval). Carico quindi l'entità gestita e aggiorno
-        // solo i campi del form: l'UPDATE lo genera il dirty checking al commit.
+        // update: niente save() sull'oggetto del form (ha le collezioni vuote,
+        // la merge le cancellerebbe): aggiorno solo i campi, poi dirty checking
         Torneo esistente = torneoRepo.findById(t.getId()).orElseThrow();
         esistente.setNome(t.getNome());
         esistente.setAnno(t.getAnno());

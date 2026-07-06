@@ -16,7 +16,10 @@ public class GiocatoreService {
 
     @Transactional(readOnly = true)
     public Giocatore giocatoreById(Long id) { return giocatoreRepo.findById(id).orElseThrow(); }
-
+    @Transactional(readOnly = true)
+    public long numeroGiocatori(Long squadraId) {
+        return giocatoreRepo.countBySquadraId(squadraId);
+    }
     @Transactional
     public Giocatore salvaGiocatore(Giocatore g) { return giocatoreRepo.save(g); }
 }

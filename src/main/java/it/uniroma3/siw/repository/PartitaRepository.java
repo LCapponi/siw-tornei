@@ -19,13 +19,11 @@ public interface PartitaRepository extends JpaRepository<Partita, Long> {
            "WHERE p.torneo.id = :torneoId ORDER BY p.dataOra")
     List<Partita> findByTorneo(Long torneoId);
 
-    // partite in cui la squadra è coinvolta (in casa o in trasferta):
-    // servono per eliminarle prima di poter eliminare la squadra
+    // partite della squadra, in casa o in trasferta
     @Query("SELECT p FROM Partita p WHERE p.squadraHome.id = :squadraId OR p.squadraAway.id = :squadraId")
     List<Partita> findBySquadra(Long squadraId);
 
-    // dettaglio partita: carica in una sola query tutte le associazioni
-    // mostrate dalla pagina (le @ManyToOne sono LAZY)
+    // dettaglio partita con tutte le associazioni in una query
     @Query("SELECT p FROM Partita p " +
            "JOIN FETCH p.squadraHome JOIN FETCH p.squadraAway JOIN FETCH p.torneo " +
            "LEFT JOIN FETCH p.arbitro " +

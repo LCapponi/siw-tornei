@@ -22,6 +22,7 @@ public class SquadraController {
 
     @GetMapping("/squadre")
     public String listaSquadre(Model model) {
+    	
         model.addAttribute("squadre", squadraService.listaSquadre());
         return "squadre";
     }
@@ -29,6 +30,7 @@ public class SquadraController {
     @GetMapping("/squadre/{id}")
     public String dettaglioSquadra(@PathVariable Long id, Model model) {
         model.addAttribute("squadra", squadraService.squadraById(id));
+        
         return "squadra";
     }
 
