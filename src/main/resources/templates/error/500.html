@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>500 - Errore interno</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="navbar"><a th:href="@{/}"><strong>Home</strong></a></div>
+<main>
+    <h1>500</h1>
+    <p th:text="${errorMessage} ?: 'Si è verificato un errore interno.'"></p>
+    <p><a th:href="@{/tornei}">Torna ai tornei</a></p>
+</main>
+</body>
+</html>

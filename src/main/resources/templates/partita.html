@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Partita</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="navbar">
+    <a th:href="@{/tornei}"><strong>Tornei</strong></a>
+    <a th:href="@{/squadre}">Squadre</a>
+</div>
+<main>
+    <h1>
+        <span th:text="${partita.squadraHome.nome}"></span>
+        vs
+        <span th:text="${partita.squadraAway.nome}"></span>
+    </h1>
+    <p class="meta">
+        <span th:text="${#temporals.format(partita.dataOra, 'dd/MM/yyyy HH:mm')}"></span> ·
+        <span th:text="${partita.luogo}"></span> ·
+        Arbitro: <span th:text="${partita.arbitro != null ? partita.arbitro.cognome : '-'}"></span>
+    </p>
+
+    <p th:if="${partita.stato == 'PLAYED'}" class="risultato">
+        Risultato: <strong th:text="${partita.goalsHome} + ' - ' + ${partita.goalsAway}"></strong>
+    </p>
+    <p th:unless="${partita.stato == 'PLAYED'}">Stato: <span th:text="${partita.stato}"></span></p>
+
+    <!-- Admin: inserisci risultato / elimina -->
+    <div sec:authorize="hasAuthority('ADMIN')" class="card">
+        <h3>Registra risultato</h3>
+        <form th:action="@{|/admin/partite/${partita.id}/risultato|}" method="post">
+            <label>Gol casa</label>
+            <input type="number" name="goalsHome" min="0"
+                   th:value="${partita.goalsHome != null ? partita.goalsHome : 0}" required/>
+            <label>Gol ospite</label>
+            <input type="number" name="goalsAway" min="0"
+                   th:value="${partita.goalsAway != null ? partita.goalsAway : 0}" required/>
+            <button type="submit">Salva risultato</button>
+        </form>
+        <form th:action="@{|/admin/partite/${partita.id}/elimina|}" method="post" style="margin-top:0.5rem">
+            <input type="hidden" name="torneoId" th:value="${partita.torneo.id}"/>
+            <button type="submit" onclick="return confirm('Eliminare?')">Elimina partita</button>
+        </form>
+    </div>
+
+    <h2>Commenti</h2>
+
+    <!-- Form nuovo commento (utenti loggati) -->
+    <div sec:authorize="isAuthenticated()" class="card">
+        <form th:action="@{/commenti/crea}" method="post">
+            <input type="hidden" name="partitaId" th:value="${partita.id}"/>
+            <textarea name="testo" rows="3" required placeholder="Scrivi un commento..."></textarea>
+            <button type="submit">Pubblica</button>
+        </form>
+    </div>
+    <p sec:authorize="isAnonymous()" class="hint">
+        <a th:href="@{/login}">Accedi</a> per commentare.
+    </p>
+
+    <!-- Lista commenti -->
+    <div th:if="${commenti.isEmpty()}" class="empty">Nessun commento.</div>
+    <div th:each="c : ${commenti}" class="card commento">
+        <p class="meta">
+            <strong th:text="|${c.user.nome} ${c.user.cognome}|"></strong>
+            · <span th:text="${#temporals.format(c.data, 'dd/MM HH:mm')}"></span>
+        </p>
+
+        <!-- Solo l'autore può modificare il proprio commento -->
+        <div th:if="${currentUserId != null and c.user.id == currentUserId}">
+            <form th:action="@{|/commenti/${c.id}/modifica|}" method="post">
+                <input type="hidden" name="partitaId" th:value="${partita.id}"/>
+                <textarea name="testo" rows="2" required th:text="${c.testo}"></textarea>
+                <button type="submit">Aggiorna</button>
+            </form>
+        </div>
+
+        <p th:unless="${currentUserId != null and c.user.id == currentUserId}"
+           th:text="${c.testo}"></p>
+    </div>
+</main>
+</body>
+</html>

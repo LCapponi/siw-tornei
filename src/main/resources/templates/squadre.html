@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Squadre</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="navbar">
+    <a th:href="@{/tornei}"><strong>Tornei</strong></a>
+    <a th:href="@{/squadre}">Squadre</a>
+    <span sec:authorize="hasAuthority('ADMIN')">
+        <a th:href="@{/admin/squadre/nuova}">+ Squadra</a>
+    </span>
+</div>
+<main>
+    <h1>Squadre</h1>
+    <ul class="lista">
+        <li th:each="s : ${squadre}">
+            <a th:href="@{|/squadre/${s.id}|}" th:text="${s.nome}"></a>
+            — <span th:text="${s.citta}"></span>
+        </li>
+    </ul>
+</main>
+</body>
+</html>

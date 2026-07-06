@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${torneo.id == null} ? 'Nuovo torneo' : 'Modifica torneo'">Torneo</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="navbar"><a th:href="@{/tornei}"><strong>Tornei</strong></a></div>
+<main>
+    <h1 th:text="${torneo.id == null} ? 'Nuovo torneo' : 'Modifica torneo'">Torneo</h1>
+    <form th:action="@{/admin/tornei}" th:object="${torneo}" method="post" class="card">
+        <!-- Se presente, l'id rende il salvataggio un UPDATE invece di un INSERT -->
+        <input type="hidden" th:field="*{id}"/>
+
+        <div th:if="${#fields.hasGlobalErrors()}">
+            <p class="errore" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+        </div>
+
+        <label>Nome</label>
+        <input th:field="*{nome}" required/>
+        <span class="errore" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span>
+
+        <label>Anno</label>
+        <input type="number" th:field="*{anno}" required/>
+        <span class="errore" th:if="${#fields.hasErrors('anno')}" th:errors="*{anno}"></span>
+
+        <label>Descrizione</label>
+        <textarea th:field="*{descrizione}" rows="4"></textarea>
+
+        <button type="submit" th:text="${torneo.id == null} ? 'Crea' : 'Salva modifiche'">Salva</button>
+    </form>
+</main>
+</body>
+</html>

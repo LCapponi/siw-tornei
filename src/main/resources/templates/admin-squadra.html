@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Nuova squadra</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="navbar"><a th:href="@{/tornei}"><strong>Tornei</strong></a></div>
+<main>
+    <h1>Nuova squadra</h1>
+    <form th:action="@{/admin/squadre}" th:object="${squadra}" method="post" class="card">
+        <label>Nome</label>
+        <input th:field="*{nome}" required/>
+        <span class="errore" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span>
+
+        <label>Città</label>
+        <input th:field="*{citta}"/>
+
+        <label>Anno di fondazione</label>
+        <input type="number" th:field="*{annoFondazione}"/>
+        <span class="errore" th:if="${#fields.hasErrors('annoFondazione')}" th:errors="*{annoFondazione}"></span>
+
+        <label>Tornei (Ctrl+click per più selezioni)</label>
+        <select th:field="*{tornei}" multiple size="4">
+            <option th:each="t : ${tornei}" th:value="${t.id}" th:text="${t.nome}"></option>
+        </select>
+
+        <button type="submit">Crea</button>
+    </form>
+</main>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Gestione Tornei di Calcio Amatoriale</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="navbar">
+    <a th:href="@{/tornei}"><strong>Tornei</strong></a>
+    <a th:href="@{/squadre}">Squadre</a>
+    <span sec:authorize="isAnonymous()">
+        <a th:href="@{/login}">Login</a>
+        <a th:href="@{/register}">Registrati</a>
+    </span>
+    <span sec:authorize="isAuthenticated()">
+        Ciao, <span sec:authentication="name">utente</span>
+        <a sec:authorize="hasAuthority('ADMIN')" th:href="@{/admin/index}">Area admin</a>
+        <form th:action="@{/logout}" method="post" style="display:inline">
+            <button type="submit">Logout</button>
+        </form>
+    </span>
+</div>
+<main>
+    <h1>Tornei di Calcio Amatoriale</h1>
+    <p>Benvenuto. Consulta tornei, squadre, calendario e classifiche.</p>
+    <ul class="lista">
+        <li><a th:href="@{/tornei}">Elenco tornei</a></li>
+        <li><a th:href="@{/squadre}">Elenco squadre</a></li>
+    </ul>
+    <div sec:authorize="hasAuthority('ADMIN')">
+        <h2>Gestione (amministratori)</h2>
+        <ul class="lista">
+            <li><a th:href="@{/admin/index}">Area amministrativa</a></li>
+        </ul>
+    </div>
+</main>
+</body>
+</html>

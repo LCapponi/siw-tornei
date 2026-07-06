@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${giocatore.id == null} ? 'Nuovo giocatore' : 'Modifica giocatore'">Giocatore</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="navbar"><a th:href="@{/tornei}"><strong>Tornei</strong></a></div>
+<main>
+    <h1 th:text="${giocatore.id == null} ? 'Nuovo giocatore' : 'Modifica giocatore'">Giocatore</h1>
+    <p>Squadra: <strong th:text="${giocatore.squadra.nome}"></strong></p>
+
+    <form th:action="@{/admin/giocatori}" th:object="${giocatore}" method="post" class="card">
+        <!-- Se presente, l'id rende il salvataggio un UPDATE invece di un INSERT -->
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" th:field="*{squadra}"/>
+
+        <label>Nome</label>
+        <input th:field="*{nome}" required/>
+        <span class="errore" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}"></span>
+
+        <label>Cognome</label>
+        <input th:field="*{cognome}" required/>
+        <span class="errore" th:if="${#fields.hasErrors('cognome')}" th:errors="*{cognome}"></span>
+
+        <label>Data di nascita</label>
+        <input type="date" th:field="*{dataNascita}"/>
+
+        <label>Ruolo</label>
+        <input th:field="*{ruolo}" placeholder="Portiere, Difensore, ..."/>
+
+        <label>Altezza (cm)</label>
+        <input type="number" th:field="*{altezza}"/>
+
+        <button type="submit" th:text="${giocatore.id == null} ? 'Crea' : 'Salva modifiche'">Salva</button>
+    </form>
+</main>
+</body>
+</html>

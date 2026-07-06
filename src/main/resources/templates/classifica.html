@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Classifica - <span th:text="${torneo.nome}"></span></title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="navbar">
+    <a th:href="@{/tornei}"><strong>Tornei</strong></a>
+    <a th:href="@{/squadre}">Squadre</a>
+</div>
+<main>
+    <h1>📊 Classifica</h1>
+    <p class="meta">
+        <a th:href="@{|/tornei/${torneo.id}|}" th:text="${torneo.nome}"></a>
+        &nbsp;·&nbsp; Anno <span th:text="${torneo.anno}"></span>
+    </p>
+
+    <!-- Caso: nessuna partita giocata / nessuna squadra -->
+    <p th:if="${classifica == null or classifica.isEmpty()}">
+        Nessuna squadra in classifica.
+    </p>
+
+    <table class="tabella" th:unless="${classifica == null or classifica.isEmpty()}">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Squadra</th>
+                <th title="Partite giocate">PG</th>
+                <th title="Vittorie">V</th>
+                <th title="Pareggi">N</th>
+                <th title="Sconfitte">P</th>
+                <th title="Gol fatti">GF</th>
+                <th title="Gol subiti">GS</th>
+                <th title="Differenza reti">DR</th>
+                <th title="Punti">Pt</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="r, stat : ${classifica}">
+                <td th:text="${stat.count}"></td>
+                <td th:text="${r.nome}"></td>
+                <td th:text="${r.partiteGiocate}"></td>
+                <td th:text="${r.vittorie}"></td>
+                <td th:text="${r.pareggi}"></td>
+                <td th:text="${r.sconfitte}"></td>
+                <td th:text="${r.golFatti}"></td>
+                <td th:text="${r.golSubiti}"></td>
+                <td th:text="${r.differenzaReti}"></td>
+                <td><strong th:text="${r.punti}"></strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="meta" style="margin-top:.75rem">
+        Ordinamento: punti, poi differenza reti, poi gol fatti.
+        Vittoria = 3 punti, pareggio = 1, sconfitta = 0.
+        Sono conteggiate solo le partite con stato <code>PLAYED</code>.
+    </p>
+
+    <p style="margin-top:1rem">
+        <a th:href="@{|/tornei/${torneo.id}|}">← Torna al torneo</a>
+    </p>
+</main>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${squadra.nome}"></title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="navbar">
+    <a th:href="@{/tornei}"><strong>Tornei</strong></a>
+    <a th:href="@{/squadre}">Squadre</a>
+</div>
+<main>
+    <h1 th:text="${squadra.nome}"></h1>
+    <p class="meta">
+        <span th:text="${squadra.citta}"></span> ·
+        Fondata nel <span th:text="${squadra.annoFondazione}"></span>
+    </p>
+
+    <h2>Rosa</h2>
+    <p sec:authorize="hasAuthority('ADMIN')">
+        <a th:href="@{|/admin/squadre/${squadra.id}/giocatori/nuovo|}">+ Aggiungi giocatore</a>
+    </p>
+    <table class="tabella">
+        <thead>
+            <tr>
+                <th>Nome</th><th>Cognome</th><th>Ruolo</th><th>Nascita</th><th>Altezza</th>
+                <th sec:authorize="hasAuthority('ADMIN')"></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="g : ${squadra.giocatori}">
+                <td th:text="${g.nome}"></td>
+                <td th:text="${g.cognome}"></td>
+                <td th:text="${g.ruolo}"></td>
+                <td th:text="${g.dataNascita}"></td>
+                <td th:text="${g.altezza}"></td>
+                <td sec:authorize="hasAuthority('ADMIN')">
+                    <a th:href="@{|/admin/giocatori/${g.id}/modifica|}">✏️ Modifica</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div sec:authorize="hasAuthority('ADMIN')" style="margin-top:1rem">
+        <a th:href="@{|/admin/squadre/${squadra.id}/modifica|}">✏️ Modifica squadra</a>
+        &nbsp;|&nbsp;
+        <form th:action="@{|/admin/squadre/${squadra.id}/elimina|}" method="post" style="display:inline">
+            <button type="submit" onclick="return confirm('Eliminare?')">Elimina squadra</button>
+        </form>
+    </div>
+</main>
+</body>
+</html>

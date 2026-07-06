@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Nuova partita</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="navbar"><a th:href="@{/tornei}"><strong>Tornei</strong></a></div>
+<main>
+    <h1>Nuova partita</h1>
+    <form th:action="@{/admin/partite}" th:object="${partita}" method="post" class="card">
+
+        <label>Torneo</label>
+        <select th:field="*{torneo}" required>
+            <option value="">--</option>
+            <option th:each="t : ${tornei}" th:value="${t.id}" th:text="${t.nome}"></option>
+        </select>
+        <span class="errore" th:if="${#fields.hasErrors('torneo')}" th:errors="*{torneo}"></span>
+
+        <label>Squadra casa</label>
+        <select th:field="*{squadraHome}" required>
+            <option value="">--</option>
+            <option th:each="s : ${squadre}" th:value="${s.id}" th:text="${s.nome}"></option>
+        </select>
+        <span class="errore" th:if="${#fields.hasErrors('squadraHome')}" th:errors="*{squadraHome}"></span>
+
+        <label>Squadra ospite</label>
+        <select th:field="*{squadraAway}" required>
+            <option value="">--</option>
+            <option th:each="s : ${squadre}" th:value="${s.id}" th:text="${s.nome}"></option>
+        </select>
+        <span class="errore" th:if="${#fields.hasErrors('squadraAway')}" th:errors="*{squadraAway}"></span>
+
+        <label>Data e ora</label>
+        <input type="datetime-local" th:field="*{dataOra}" required/>
+        <span class="errore" th:if="${#fields.hasErrors('dataOra')}" th:errors="*{dataOra}"></span>
+
+        <label>Luogo</label>
+        <input th:field="*{luogo}"/>
+
+        <label>Arbitro</label>
+        <select th:field="*{arbitro}">
+            <option value="">-- nessuno --</option>
+            <option th:each="a : ${arbitri}" th:value="${a.id}"
+                    th:text="|${a.nome} ${a.cognome}|"></option>
+        </select>
+
+        <button type="submit">Crea</button>
+    </form>
+</main>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Registrazione</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="navbar">
+    <a th:href="@{/}"><strong>Home</strong></a>
+    <a th:href="@{/tornei}">Tornei</a>
+</div>
+<main>
+    <h1>Registrati</h1>
+    <form th:action="@{/register}" method="post" class="card">
+        <label>Nome</label>
+        <input type="text" required th:field="${user.nome}"/>
+        <span class="errore" th:if="${#fields.hasErrors('user.nome')}" th:errors="${user.nome}"></span>
+
+        <label>Cognome</label>
+        <input type="text" required th:field="${user.cognome}"/>
+        <span class="errore" th:if="${#fields.hasErrors('user.cognome')}" th:errors="${user.cognome}"></span>
+
+        <label>Username</label>
+        <input type="text" required th:field="${credentials.username}"/>
+        <span class="errore" th:if="${#fields.hasErrors('credentials.username')}" th:errors="${credentials.username}"></span>
+
+        <label>Password</label>
+        <input type="password" required th:field="${credentials.password}"/>
+        <span class="errore" th:if="${#fields.hasErrors('credentials.password')}" th:errors="${credentials.password}"></span>
+
+        <button type="submit">Crea account</button>
+    </form>
+</main>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Area amministrativa</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="navbar">
+    <a th:href="@{/}"><strong>Home</strong></a>
+    <a th:href="@{/tornei}">Tornei</a>
+    <a th:href="@{/squadre}">Squadre</a>
+    <form th:action="@{/logout}" method="post" style="display:inline">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+<main>
+    <h1>Area amministrativa</h1>
+    <ul class="lista">
+        <li><a th:href="@{/admin/tornei/nuovo}">+ Nuovo torneo</a></li>
+        <li><a th:href="@{/admin/squadre/nuova}">+ Nuova squadra</a></li>
+        <li><a th:href="@{/admin/partite/nuova}">+ Nuova partita</a></li>
+    </ul>
+    <p class="hint">Per aggiungere giocatori: apri una squadra e usa "+ Aggiungi giocatore".</p>
+</main>
+</body>
+</html>

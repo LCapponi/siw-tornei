@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="${torneo.nome}"></title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="navbar">
+    <a th:href="@{/tornei}"><strong>Tornei</strong></a>
+    <a th:href="@{/squadre}">Squadre</a>
+</div>
+<main>
+    <h1 th:text="${torneo.nome}"></h1>
+    <p class="meta">Anno: <span th:text="${torneo.anno}"></span></p>
+    <p th:text="${torneo.descrizione}"></p>
+
+    <p><a th:href="@{|/tornei/${torneo.id}/classifica|}">📊 Vedi classifica</a></p>
+
+    <h2>Squadre partecipanti</h2>
+    <ul class="lista">
+        <li th:each="s : ${torneo.squadre}">
+            <a th:href="@{|/squadre/${s.id}|}" th:text="${s.nome}"></a>
+        </li>
+    </ul>
+
+    <h2>Calendario partite</h2>
+    <table class="tabella">
+        <thead><tr><th>Data</th><th>Casa</th><th>Risultato</th><th>Ospite</th><th>Stato</th><th></th></tr></thead>
+        <tbody>
+            <tr th:each="p : ${partite}">
+                <td th:text="${#temporals.format(p.dataOra, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${p.squadraHome.nome}"></td>
+                <td>
+                    <span th:if="${p.stato == 'PLAYED'}"
+                          th:text="${p.goalsHome} + ' - ' + ${p.goalsAway}"></span>
+                    <span th:unless="${p.stato == 'PLAYED'}">—</span>
+                </td>
+                <td th:text="${p.squadraAway.nome}"></td>
+                <td th:text="${p.stato}"></td>
+                <td><a th:href="@{|/partite/${p.id}|}">Dettagli</a></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div sec:authorize="hasAuthority('ADMIN')" style="margin-top:1rem">
+        <a th:href="@{|/admin/tornei/${torneo.id}/modifica|}">✏️ Modifica torneo</a>
+        &nbsp;|&nbsp;
+        <form th:action="@{|/admin/tornei/${torneo.id}/elimina|}" method="post" style="display:inline">
+            <button type="submit" onclick="return confirm('Eliminare?')">Elimina torneo</button>
+        </form>
+    </div>
+</main>
+</body>
+</html>
