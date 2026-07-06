@@ -41,10 +41,6 @@ proprio commento a una partita (solo i propri: controllo nel service).
 **Admin**: creazione/modifica/eliminazione di tornei, squadre, giocatori e
 partite; registrazione dei risultati.
 
-## Analisi N+1 (obbligatoria, sezione 8.2)
-
-Vedi `ANALISI-N1.md` (con i risultati misurati) e il test `N1AnalisiTest.java`.
-Esecuzione: `.\mvnw.cmd test -Dtest=N1AnalisiTest`
 
 ## Note architetturali
 - Architettura a livelli: controller → service (`@Transactional`, logica di
